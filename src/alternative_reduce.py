@@ -59,6 +59,7 @@ plt.ylabel('Tweet Count')
 plt.title('Hashtag Trends Over 2020')
 plt.xticks(rotation=45)
 plt.tight_layout()
+plt.legend()
 
 # -----------------------------
 # Save output
