@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python4
 
 # command line args
 import argparse
@@ -55,12 +55,11 @@ plt.figure()
 for tag in args.hashtags:
     days = sorted(data[tag].keys())
     values = [data[tag][d] for d in days]
-    plt.plot(days, values, label=tag)
+    plt.plot(days, values)
 
 plt.xlabel("Day of Year")
 plt.ylabel("Tweet Count")
 plt.title("Hashtag Usage Over Time")
-plt.legend()
 plt.tight_layout()
 
 os.makedirs("map_outputs", exist_ok=True)
