@@ -62,7 +62,7 @@ plt.ylabel("Tweet Count")
 plt.title("Hashtag Usage Over Time")
 plt.tight_layout()
 
-os.makedirs("map_outputs", exist_ok=True)
+os.makedirs("map_outputs/alternative", exist_ok=True)
 
 # clean hashtag names (remove # and unsafe characters)
 clean_tags = [tag.replace("#", "") for tag in args.hashtags]
@@ -70,7 +70,7 @@ clean_tags = [tag.replace("#", "") for tag in args.hashtags]
 # join multiple hashtags with underscore
 tag_part = "_".join(clean_tags)
 
-output_file = f"map_outputs/{args.type}_{tag_part}_trend.png"
+output_file = f"map_outputs/alternative/{args.type}_{tag_part}_trend.png"
 
 plt.savefig(output_file)
 print(f"Saved plot to {output_file}")
