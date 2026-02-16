@@ -1,26 +1,38 @@
 # Coronavirus Twitter Analysis (2020)
 
-This project analyzes geotagged tweets sent in 2020 to track the spread and discussion of coronavirus-related topics on social media. Using Python and a MapReduce-style workflow, we processed over a billion tweets to visualize hashtag usage across countries and languages, and to observe trends over the year.
+This project analyzes geotagged tweets sent in 2020 to monitor the spread and discussion of coronavirus-related topics on social media. Using Python and a MapReduce-style workflow, I processed over a billion tweets to visualize hashtag usage across countries and languages, and to observe trends over the year.
 
 ## Project Overview
 
-We processed the 2020 geotagged tweets dataset using a MapReduce approach:
+I processed the 2020 geotagged tweets dataset using a MapReduce approach:
 
 1. **Map Step (`map.py`)**: Counts occurrences of specific hashtags by language and country for each daily dataset.  
-2. **Reduce Step (`reduce.py`)**: Merges daily counts into comprehensive datasets for languages and countries.  
+2. **Reduce Step (`reduce.py`)**: Aggregates daily counts into comprehensive datasets for languages and countries.  
 3. **Visualization (`visualize.py`)**: Generates bar graphs showing the top 10 countries or languages for a selected hashtag.  
-4. **Alternative Reduce (`alternative_reduce.py`)**: Generates line plots showing hashtag usage over time, with one line per hashtag and the x-axis representing the day of the year.
+4. **Alternative Reduce (`alternative_reduce.py`)**: Generates line plots showing hashtag usage trends over the year, with one line per hashtag. The x-axis represents the day of the year (integer), and the y-axis represents total tweet counts.
 
 ## Key Outputs
 
-The analysis produced four main plots:
+Number of times `#coronavirus` was tweeted by country over 2020:  
+![Country #coronavirus](map_outputs/countrycoronavirus.png)
 
-- `country_coronavirus.png` – Top 10 countries tweeting #coronavirus.  
-- `country_코로나바이러스.png` – Top 10 countries tweeting #코로나바이러스.  
-- `lang_coronavirus.png` – Top 10 languages for #coronavirus tweets.  
-- `lang_코로나바이러스.png` – Top 10 languages for #코로나바이러스 tweets.  
+Number of times `#coronavirus` was tweeted by language over 2020:  
+![Language #coronavirus](map_outputs/langcoronavirus.png)
 
-Additionally, the alternative reduce script generated descriptive trend plots for hashtags over the year, e.g., `map_outputs/country_코로나바이러스_trend.png`.
+Number of times `#코로나바이러스` was tweeted by country over 2020:  
+![Country #코로나바이러스](map_outputs/country코로나바이러스.png)
+
+Number of times `#코로나바이러스` was tweeted by language over 2020:  
+![Language #코로나바이러스](map_outputs/lang코로나바이러스.png)
+
+### Line Plots (Alternative Reduce)
+
+Daily hashtag trends for multiple hashtags, plotted over the year:  
+
+Trends for `#coronavirus` and `#코로나바이러스`:  
+![Country trends](map_outputs/hashtags_coronavirus_코로나바이러스_trend.png)
+
+> These line plots were generated using `alternative_reduce.py` with all country or language `.json` outputs as input. Each line corresponds to a hashtag, with the x-axis as day-of-year integers and y-axis as the total number of tweets.
 
 ## Technologies and Techniques
 
@@ -29,9 +41,10 @@ Additionally, the alternative reduce script generated descriptive trend plots fo
 - **Matplotlib** for generating plots.  
 - **JSON** for structured data representation.  
 
-## What This Demonstrates
+## Demonstrated Skills
 
-- Handling and processing extremely large datasets (~1.1 billion tweets).  
+- Handling and analyzing extremely large datasets (~1.1 billion tweets).  
 - Working with multilingual text and geolocation metadata.  
-- Applying parallel processing concepts with MapReduce.  
-- Generating clear, descriptive visualizations suitable for reporting and presentation.
+- Applying parallel processing concepts using MapReduce.  
+- Creating clear, descriptive visualizations suitable for reporting and presentation.
+

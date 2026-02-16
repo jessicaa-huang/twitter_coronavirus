@@ -1,81 +1,74 @@
-#!/usr/bin/env python4
+#!/usr/bin/env python3
 
-# command line args
+# -----------------------------
+# Command line arguments
+# -----------------------------
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('hashtags', nargs='+')
-parser.add_argument('--type', required=True, choices=['country', 'lang'])
+parser.add_argument('--input_paths', nargs='+', required=True,
+                    help='List of JSON files to include in the plot')
+parser.add_argument('--keys', nargs='+', required=True,
+                    help='Hashtags to track')
 args = parser.parse_args()
 
-# imports
+# -----------------------------
+# Imports
+# -----------------------------
 import os
 import json
-import matplotlib.pyplot as plt
+from collections import defaultdict
 from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')  # no GUI
+import matplotlib.pyplot as plt
 
-OUTPUT_DIR = "outputs"
+# -----------------------------
+# Aggregate data
+# -----------------------------
+# Structure: total[hashtag][day_of_year] = total count
+total = defaultdict(lambda: defaultdict(int))
 
-# dataset:
-# {
-#   "#coronavirus": { day_of_year: total_count }
-# }
-data = {tag: {} for tag in args.hashtags}
+for path in args.input_paths:
+    with open(path) as f:
+        tmp = json.load(f)
 
-for filename in sorted(os.listdir(OUTPUT_DIR)):
+    # Extract date from filename (assumes format geoTwitterYY-MM-DD.zip.*)
+    filename = os.path.basename(path)
+    year = 2020  # all tweets are from 2020
+    month = int(filename.split('-')[1])
+    day = int(filename.split('-')[2].split('.')[0])
+    day_of_year = datetime(year, month, day).timetuple().tm_yday
 
-    # only process correct file type
-    if not filename.endswith(f".{args.type}"):
-        continue
+    # Sum counts for each requested hashtag
+    for k in args.keys:
+        if k in tmp:
+            total[k][day_of_year] += sum(tmp[k].values())
 
-    # filename format:
-    # geoTwitter20-10-01.zip.country
+# -----------------------------
+# Plotting
+# -----------------------------
+plt.figure(figsize=(10,6))
 
-    date_part = filename.split('.')[0].split('-')[1:]
-    month = int(date_part[0])
-    day = int(date_part[1])
+for hashtag in args.keys:
+    days = sorted(total[hashtag].keys())
+    values = [total[hashtag][d] for d in days]
+    plt.plot(days, values, label=hashtag)
 
-    # convert to day-of-year
-    date_obj = datetime(2020, month, day)
-    day_of_year = date_obj.timetuple().tm_yday
-
-    with open(os.path.join(OUTPUT_DIR, filename)) as f:
-        counts = json.load(f)
-
-    for tag in args.hashtags:
-        if tag in counts:
-            total = sum(counts[tag].values())
-        else:
-            total = 0
-
-        data[tag][day_of_year] = total
-
-# plotting
-plt.figure()
-
-for tag in args.hashtags:
-    days = sorted(data[tag].keys())
-    values = [data[tag][d] for d in days]
-    plt.plot(days, values)
-
-plt.xlabel("Day of Year")
-plt.ylabel("Tweet Count")
-plt.title("Hashtag Usage Over Time")
+plt.xlabel('Day of Year')
+plt.ylabel('Tweet Count')
+plt.title('Hashtag Trends Over 2020')
+plt.xticks(rotation=45)
 plt.tight_layout()
 
-os.makedirs("map_outputs/alternative", exist_ok=True)
+# -----------------------------
+# Save output
+# -----------------------------
+os.makedirs("map_outputs", exist_ok=True)
 
-# clean hashtag names (remove # and unsafe characters)
-clean_tags = [tag.replace("#", "") for tag in args.hashtags]
+# Build descriptive filename from hashtags
+clean_tags = [h.replace("#", "") for h in args.keys]
+filename = f"map_outputs/hashtags_{'_'.join(clean_tags)}_trend.png"
 
-# join multiple hashtags with underscore
-tag_part = "_".join(clean_tags)
-
-output_file = f"map_outputs/alternative/{args.type}_{tag_part}_trend.png"
-
-plt.savefig(output_file)
-print(f"Saved plot to {output_file}")
-
-
-
-
+plt.savefig(filename)
+print(f"Saved plot to {filename}")
 
