@@ -39,7 +39,7 @@ plt.figure()
 plt.bar(keys, values)
 plt.xlabel("Keys")
 plt.ylabel("Values")
-plt.title(f"{args.key} distribution")
+plt.title("Distribution")
 
 plt.xticks(rotation=45)
 plt.tight_layout()
@@ -58,8 +58,6 @@ clean_key = args.key.replace("#", "")
 output_file = f"map_outputs/{input_name}{clean_key}.png"
 
 plt.savefig(output_file)
-
-
 
 print(f"Saved plot to {output_file}")
 
